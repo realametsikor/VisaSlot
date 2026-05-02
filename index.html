@@ -37,8 +37,13 @@
             <button class="tab" onclick="window.location.href='/timelines'">Timelines</button>
         </div>
 
-        <!-- Filter Bar -->
+                <!-- Filter Bar -->
         <section class="filters card">
+            <!-- NEW: Live Search Input -->
+            <div class="filter-group" style="flex: 2;">
+                <label for="searchInput">Search Embassy</label>
+                <input type="text" id="searchInput" placeholder="e.g., London, Mumbai, Berlin...">
+            </div>
             <div class="filter-group">
                 <label for="countryFilter">Country</label>
                 <select id="countryFilter">
@@ -60,6 +65,7 @@
                 </select>
             </div>
         </section>
+
 
         <!-- Status Board -->
         <section class="status-board card">
