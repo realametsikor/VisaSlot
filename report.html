@@ -41,13 +41,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <!-- Shared Header/Nav -->
     <header class="navbar">
         <div class="nav-container">
-            <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">VisaSlot</div>
+            <div class="logo" onclick="window.location.href='/'" style="cursor: pointer;">VisaSlot</div>
             <nav class="nav-links">
-                <div class="nav-item" onclick="window.location.href='index.html'">Live Feed</div>
-                <div class="nav-item" onclick="window.location.href='timelines.html'">Timelines</div>
+                <div class="nav-item" onclick="window.location.href='/'">Live Feed</div>
+                <div class="nav-item" onclick="window.location.href='/timelines'">Timelines</div>
+                <div class="nav-item" onclick="window.location.href='/admin'">Admin</div>
             </nav>
         </div>
     </header>
@@ -56,10 +56,7 @@
         <div class="card">
             <h2 style="margin-bottom: 1.5rem;">Report Slot Status</h2>
             
-            <!-- No <form> tags, purely div-based for JS handling -->
             <div class="form-container">
-                
-                <!-- Status Toggle -->
                 <div class="toggle-container">
                     <label class="radio-label">
                         <input type="radio" name="slotStatus" value="found" checked onchange="toggleDate(true)">
@@ -96,7 +93,6 @@
                     </select>
                 </div>
 
-                <!-- This group hides if 'nothing available' is selected -->
                 <div class="form-group" id="datePickerGroup">
                     <label for="slotDate">Slot Date Seen</label>
                     <input type="date" id="slotDate">
@@ -111,7 +107,6 @@
                     Submit Report
                 </button>
                 
-                <!-- Success Message Container -->
                 <div id="successMessage" style="display: none; margin-top: 1rem; padding: 1rem; background: var(--success-bg); color: var(--success-color); border-radius: var(--radius-md); text-align: center; font-weight: 500;">
                     Thank you! Your report has been submitted.
                 </div>
@@ -119,7 +114,6 @@
         </div>
     </main>
 
-    <!-- UI Toggle Logic -->
     <script>
         function toggleDate(isFound) {
             const dateGroup = document.getElementById('datePickerGroup');
@@ -127,13 +121,8 @@
                 dateGroup.style.display = 'flex';
             } else {
                 dateGroup.style.display = 'none';
-                document.getElementById('slotDate').value = ''; // Clear the date if hidden
+                document.getElementById('slotDate').value = ''; 
             }
-        }
-        
-        // Placeholder for the submission logic to prevent errors if clicked
-        function submitReport() {
-            console.log("Submission logic will be handled in js/report.js");
         }
     </script>
     <script src="js/supabase.js"></script>
