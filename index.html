@@ -37,9 +37,8 @@
             <button class="tab" onclick="window.location.href='/timelines'">Timelines</button>
         </div>
 
-                <!-- Filter Bar -->
+        <!-- Filter Bar with Live Search -->
         <section class="filters card">
-            <!-- NEW: Live Search Input -->
             <div class="filter-group" style="flex: 2;">
                 <label for="searchInput">Search Embassy</label>
                 <input type="text" id="searchInput" placeholder="e.g., London, Mumbai, Berlin...">
@@ -66,7 +65,6 @@
             </div>
         </section>
 
-
         <!-- Status Board -->
         <section class="status-board card">
             <h3>Embassy Watch — Recently Checked</h3>
@@ -84,22 +82,13 @@
                 <div class="spinner"></div>
                 <p>Loading live slots...</p>
             </div>
-            <div id="feedContainer" class="feed-container"></div>
-                    <!-- Live Feed Section -->
-        <section class="feed-section">
-            <div id="loadingState" class="loading-state">
-                <div class="spinner"></div>
-                <p>Loading live slots...</p>
-            </div>
             
             <div id="feedContainer" class="feed-container"></div>
             
-            <!-- NEW: Load More Button (Hidden by default) -->
+            <!-- Load More Button -->
             <button id="loadMoreBtn" class="btn btn-secondary" onclick="loadMore()" style="display: none; width: 100%; margin-top: 1.5rem;">
                 Load More Slots
             </button>
-        </section>
-
         </section>
     </main>
 
