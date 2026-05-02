@@ -8,9 +8,8 @@
 
 // 1. Define your connection variables
 // IMPORTANT: Replace these string values with your actual project URL and Anon Key from your Supabase dashboard (Project Settings -> API).
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-
+const SUPABASE_URL = 'https://rcplpistzbefowlgsrpt.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjcGxwaXN0emJlZm93bGdzcnB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NTA4NjgsImV4cCI6MjA5MzMyNjg2OH0.2xWIBLQb7cqlrHfX84ZLA4JqL-eP5rDAnK2iYwcPoPw';
 // 2. Initialize the client
 // We wrap this in a try/catch block just in case the Supabase CDN script fails to load in the HTML.
 let supabaseClient;
