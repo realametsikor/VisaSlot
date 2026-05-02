@@ -4,12 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel | VisaSlot</title>
-    <!-- Link to our shared stylesheet -->
     <link rel="stylesheet" href="css/style.css">
-    
-    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <style>
         .admin-row {
             display: flex;
@@ -47,14 +43,13 @@
     </style>
 </head>
 <body>
-    <!-- Shared Header/Nav -->
     <header class="navbar">
         <div class="nav-container">
-            <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">VisaSlot</div>
+            <div class="logo" onclick="window.location.href='/'" style="cursor: pointer;">VisaSlot</div>
             <nav class="nav-links">
-                <div class="nav-item" onclick="window.location.href='index.html'">Live Feed</div>
-                <div class="nav-item" onclick="window.location.href='timelines.html'">Timelines</div>
-                <div class="nav-item active" onclick="window.location.href='admin.html'">Admin</div>
+                <div class="nav-item" onclick="window.location.href='/'">Live Feed</div>
+                <div class="nav-item" onclick="window.location.href='/timelines'">Timelines</div>
+                <div class="nav-item active" onclick="window.location.href='/admin'">Admin</div>
             </nav>
         </div>
     </header>
@@ -74,7 +69,7 @@
             </p>
         </section>
 
-        <!-- Dashboard Section (Hidden by default) -->
+        <!-- Dashboard Section -->
         <section id="dashboardSection" style="display: none;">
             <div class="card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -96,24 +91,18 @@
         </section>
     </main>
 
-    <!-- Supabase Logic Script -->
     <script src="js/supabase.js"></script>
     <script>
-        // --- Admin Configuration ---
-        // For prototype purposes only. 
         const ADMIN_PASSWORD = "visaslotadmin"; 
 
-        // --- Authentication Logic ---
         function attemptLogin() {
             const pwd = document.getElementById('adminPassword').value;
             if (pwd === ADMIN_PASSWORD) {
-                // Success
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('dashboardSection').style.display = 'block';
-                document.getElementById('adminPassword').value = ''; // clear field
+                document.getElementById('adminPassword').value = ''; 
                 loadReports();
             } else {
-                // Fail
                 document.getElementById('loginError').style.display = 'block';
             }
         }
@@ -121,17 +110,15 @@
         function logout() {
             document.getElementById('dashboardSection').style.display = 'none';
             document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('adminFeed').innerHTML = ''; // clear data
+            document.getElementById('adminFeed').innerHTML = ''; 
         }
 
-        // Allow pressing 'Enter' to submit the password
         document.getElementById('adminPassword').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 attemptLogin();
             }
         });
 
-        // --- Data Fetching & Rendering ---
         async function loadReports() {
             const feedContainer = document.getElementById('adminFeed');
             feedContainer.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Loading reports...</p></div>';
@@ -178,7 +165,6 @@
             }
         }
 
-        // --- Data Deletion ---
         async function deleteReport(id) {
             if (!confirm("Are you sure you want to permanently delete this report?")) {
                 return;
@@ -192,7 +178,6 @@
 
                 if (error) throw error;
 
-                // Remove the row from the UI immediately
                 const row = document.getElementById(`row-${id}`);
                 if (row) {
                     row.remove();
