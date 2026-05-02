@@ -1,64 +1,119 @@
 /**
  * js/feed.js
+ * Updated with Backend Filtering and Pagination
  */
 
-// NEW: Global array to hold our data for instant frontend filtering
 let globalFeedData = [];
+let currentPage = 0;
+const ITEMS_PER_PAGE = 15;
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetchFeedData();
-    setInterval(fetchFeedData, 60000);
+    fetchFeedData(false); // false means "do not append, this is a fresh load"
     
-    // NEW: Add event listeners to our filter inputs
-    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    // Listen for filter changes, but now they trigger a fresh backend search
+    document.getElementById('searchInput').addEventListener('input', () => debounce(applyFilters, 500)());
     document.getElementById('countryFilter').addEventListener('change', applyFilters);
     document.getElementById('visaFilter').addEventListener('change', applyFilters);
 });
 
-async function fetchFeedData() {
+// A simple debounce function so we don't spam the database on every single keystroke
+let timeoutId;
+function debounce(func, delay) {
+    return function() {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func();
+        }, delay);
+    };
+}
+
+// Triggered when a user types or uses a dropdown
+function applyFilters() {
+    currentPage = 0; // Reset to page 0 when searching
+    document.getElementById('feedContainer').innerHTML = ''; // Clear current feed
+    document.getElementById('loadingState').style.display = 'block';
+    document.getElementById('loadMoreBtn').style.display = 'none';
+    fetchFeedData(false);
+}
+
+// Triggered by the "Load More" button
+function loadMore() {
+    currentPage++;
+    const btn = document.getElementById('loadMoreBtn');
+    btn.textContent = 'Loading...';
+    btn.disabled = true;
+    fetchFeedData(true); // true means "append data to existing list"
+}
+
+// Main fetch function handling filters and pagination
+async function fetchFeedData(isLoadMore) {
     try {
-        const { data, error } = await supabaseClient
+        const searchTerm = document.getElementById('searchInput').value.trim();
+        const country = document.getElementById('countryFilter').value;
+        const visa = document.getElementById('visaFilter').value;
+
+        // Calculate our range for pagination
+        const from = currentPage * ITEMS_PER_PAGE;
+        const to = from + ITEMS_PER_PAGE - 1;
+
+        // 1. Build the Supabase Query dynamically
+        let query = supabaseClient
             .from('slot_reports')
-            .select('*')
-            .order('reported_at', { ascending: false });
+            .select('*', { count: 'exact' }) // Ask Supabase for the total count of matching rows
+            .order('reported_at', { ascending: false })
+            .range(from, to);
+
+        // 2. Add filters to the backend query if they exist
+        if (searchTerm) {
+            query = query.ilike('embassy', `%${searchTerm}%`); // Case-insensitive search
+        }
+        if (country !== 'all') {
+            query = query.eq('country', country);
+        }
+        if (visa !== 'all') {
+            query = query.eq('visa_category', visa);
+        }
+
+        // 3. Execute the query
+        const { data, error, count } = await query;
 
         if (error) throw error;
 
         if (data) {
-            // NEW: Store data globally, then apply filters before updating the feed
-            globalFeedData = data; 
+            if (isLoadMore) {
+                globalFeedData = [...globalFeedData, ...data]; // Append new data
+            } else {
+                globalFeedData = data; // Replace with fresh data
+            }
+
+            // Update UI
+            updateLiveFeed(globalFeedData);
+            updateStatusBoard(globalFeedData); 
             
-            updateStatsCounter(data);
-            updateStatusBoard(data);
-            applyFilters(); 
-            
-            document.getElementById('loadingState').style.display = 'none';
+            // Note: In a production app, you might want a separate query for the total stats counter 
+            // so it isn't limited by our 15-item pagination, but we will use the local data for now to keep it simple!
+            updateStatsCounter(globalFeedData);
+
+            // Handle "Load More" button visibility
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            if (globalFeedData.length < count) {
+                loadMoreBtn.style.display = 'block';
+                loadMoreBtn.textContent = 'Load More Slots';
+                loadMoreBtn.disabled = false;
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
         }
+        
+        document.getElementById('loadingState').style.display = 'none';
+
     } catch (error) {
         console.error("Error fetching feed data:", error);
-        document.getElementById('loadingState').innerHTML = '<p>Error loading live slots. Please try again.</p>';
+        document.getElementById('loadingState').innerHTML = '<p style="color: red;">Error loading live slots. Please try again.</p>';
     }
 }
 
-// NEW: Filtering Logic
-function applyFilters() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const country = document.getElementById('countryFilter').value;
-    const visa = document.getElementById('visaFilter').value;
-
-    const filteredData = globalFeedData.filter(report => {
-        // Check if embassy name matches the search text
-        const matchesSearch = report.embassy.toLowerCase().includes(searchTerm);
-        // Check if country matches (or if 'all' is selected)
-        const matchesCountry = country === 'all' || report.country === country;
-        // Check if visa matches (or if 'all' is selected)
-        const matchesVisa = visa === 'all' || report.visa_category === visa;
-
-        return matchesSearch && matchesCountry && matchesVisa;
-    });
-
-    updateLiveFeed(filteredData);
-}
+// --- The UI rendering functions below remain unchanged ---
 
 function updateStatsCounter(data) {
     const uniqueEmbassies = new Set(data.map(item => item.embassy)).size;
@@ -72,7 +127,7 @@ function updateStatsCounter(data) {
 
     const counterElement = document.getElementById('statsCounter');
     if (counterElement) {
-        counterElement.textContent = `${uniqueEmbassies} embassies watched · ${slotsToday} slots reported today`;
+        counterElement.textContent = `Viewing ${uniqueEmbassies} embassies · ${slotsToday} slots reported today (in this view)`;
     }
 }
 
@@ -81,7 +136,6 @@ function updateStatusBoard(data) {
     if (!boardContainer) return;
 
     const latestReports = {};
-
     data.forEach(report => {
         const key = `${report.embassy}-${report.visa_category}`;
         if (!latestReports[key]) {
@@ -94,7 +148,7 @@ function updateStatusBoard(data) {
         .slice(0, 10);
 
     if (boardRows.length === 0) {
-        boardContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; padding: 1rem 0;">No embassy checks reported yet.</p>';
+        boardContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); font-size: 0.9rem; padding: 1rem 0;">No embassy checks found.</p>';
         return;
     }
 
@@ -124,7 +178,7 @@ function updateLiveFeed(data) {
     if (!feedContainer) return;
 
     if (data.length === 0) {
-        feedContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No slots match your search. Be the first to report!</p>';
+        feedContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No slots match your search.</p>';
         return;
     }
 
