@@ -1,6 +1,6 @@
 /**
  * js/feed.js
- * Updated with Backend Filtering and Pagination
+ * Updated with Bulletproof Safety Checks, Backend Filtering, and Pagination
  */
 
 let globalFeedData = [];
@@ -8,15 +8,18 @@ let currentPage = 0;
 const ITEMS_PER_PAGE = 15;
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetchFeedData(false); // false means "do not append, this is a fresh load"
+    fetchFeedData(false);
     
-    // Listen for filter changes, but now they trigger a fresh backend search
-    document.getElementById('searchInput').addEventListener('input', () => debounce(applyFilters, 500)());
-    document.getElementById('countryFilter').addEventListener('change', applyFilters);
-    document.getElementById('visaFilter').addEventListener('change', applyFilters);
+    // Listen for filter changes
+    const searchInput = document.getElementById('searchInput');
+    const countryFilter = document.getElementById('countryFilter');
+    const visaFilter = document.getElementById('visaFilter');
+    
+    if (searchInput) searchInput.addEventListener('input', () => debounce(applyFilters, 500)());
+    if (countryFilter) countryFilter.addEventListener('change', applyFilters);
+    if (visaFilter) visaFilter.addEventListener('change', applyFilters);
 });
 
-// A simple debounce function so we don't spam the database on every single keystroke
 let timeoutId;
 function debounce(func, delay) {
     return function() {
@@ -27,45 +30,47 @@ function debounce(func, delay) {
     };
 }
 
-// Triggered when a user types or uses a dropdown
 function applyFilters() {
-    currentPage = 0; // Reset to page 0 when searching
-    document.getElementById('feedContainer').innerHTML = ''; // Clear current feed
-    document.getElementById('loadingState').style.display = 'block';
-    document.getElementById('loadMoreBtn').style.display = 'none';
+    currentPage = 0; 
+    
+    const feedContainer = document.getElementById('feedContainer');
+    const loadingState = document.getElementById('loadingState');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    
+    if (feedContainer) feedContainer.innerHTML = ''; 
+    if (loadingState) loadingState.style.display = 'block';
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+    
     fetchFeedData(false);
 }
 
-// Triggered by the "Load More" button
 function loadMore() {
     currentPage++;
     const btn = document.getElementById('loadMoreBtn');
-    btn.textContent = 'Loading...';
-    btn.disabled = true;
-    fetchFeedData(true); // true means "append data to existing list"
+    if (btn) {
+        btn.textContent = 'Loading...';
+        btn.disabled = true;
+    }
+    fetchFeedData(true); 
 }
 
-// Main fetch function handling filters and pagination
 async function fetchFeedData(isLoadMore) {
     try {
-        const searchTerm = document.getElementById('searchInput').value.trim();
-        const country = document.getElementById('countryFilter').value;
-        const visa = document.getElementById('visaFilter').value;
+        const searchTerm = document.getElementById('searchInput') ? document.getElementById('searchInput').value.trim() : '';
+        const country = document.getElementById('countryFilter') ? document.getElementById('countryFilter').value : 'all';
+        const visa = document.getElementById('visaFilter') ? document.getElementById('visaFilter').value : 'all';
 
-        // Calculate our range for pagination
         const from = currentPage * ITEMS_PER_PAGE;
         const to = from + ITEMS_PER_PAGE - 1;
 
-        // 1. Build the Supabase Query dynamically
         let query = supabaseClient
             .from('slot_reports')
-            .select('*', { count: 'exact' }) // Ask Supabase for the total count of matching rows
+            .select('*', { count: 'exact' }) 
             .order('reported_at', { ascending: false })
             .range(from, to);
 
-        // 2. Add filters to the backend query if they exist
         if (searchTerm) {
-            query = query.ilike('embassy', `%${searchTerm}%`); // Case-insensitive search
+            query = query.ilike('embassy', `%${searchTerm}%`);
         }
         if (country !== 'all') {
             query = query.eq('country', country);
@@ -74,46 +79,45 @@ async function fetchFeedData(isLoadMore) {
             query = query.eq('visa_category', visa);
         }
 
-        // 3. Execute the query
         const { data, error, count } = await query;
 
         if (error) throw error;
 
         if (data) {
             if (isLoadMore) {
-                globalFeedData = [...globalFeedData, ...data]; // Append new data
+                globalFeedData = [...globalFeedData, ...data]; 
             } else {
-                globalFeedData = data; // Replace with fresh data
+                globalFeedData = data; 
             }
 
-            // Update UI
             updateLiveFeed(globalFeedData);
             updateStatusBoard(globalFeedData); 
-            
-            // Note: In a production app, you might want a separate query for the total stats counter 
-            // so it isn't limited by our 15-item pagination, but we will use the local data for now to keep it simple!
             updateStatsCounter(globalFeedData);
 
-            // Handle "Load More" button visibility
+            // Safety check: only manipulate the button if it exists in the HTML
             const loadMoreBtn = document.getElementById('loadMoreBtn');
-            if (globalFeedData.length < count) {
-                loadMoreBtn.style.display = 'block';
-                loadMoreBtn.textContent = 'Load More Slots';
-                loadMoreBtn.disabled = false;
-            } else {
-                loadMoreBtn.style.display = 'none';
+            if (loadMoreBtn) {
+                if (count !== null && globalFeedData.length < count) {
+                    loadMoreBtn.style.display = 'block';
+                    loadMoreBtn.textContent = 'Load More Slots';
+                    loadMoreBtn.disabled = false;
+                } else {
+                    loadMoreBtn.style.display = 'none';
+                }
             }
         }
         
-        document.getElementById('loadingState').style.display = 'none';
+        const loadingState = document.getElementById('loadingState');
+        if (loadingState) loadingState.style.display = 'none';
 
     } catch (error) {
         console.error("Error fetching feed data:", error);
-        document.getElementById('loadingState').innerHTML = '<p style="color: red;">Error loading live slots. Please try again.</p>';
+        const loadingState = document.getElementById('loadingState');
+        if (loadingState) {
+            loadingState.innerHTML = '<p style="color: #ef4444;">Error loading live slots. Please try again.</p>';
+        }
     }
 }
-
-// --- The UI rendering functions below remain unchanged ---
 
 function updateStatsCounter(data) {
     const uniqueEmbassies = new Set(data.map(item => item.embassy)).size;
