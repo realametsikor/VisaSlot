@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Get Alerts | VisaSlot</title>
-    <!-- Link to our shared stylesheet -->
     <link rel="stylesheet" href="css/style.css">
     <style>
         .alert-intro {
@@ -16,14 +15,13 @@
     </style>
 </head>
 <body>
-    <!-- Shared Header/Nav -->
     <header class="navbar">
         <div class="nav-container">
-            <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">VisaSlot</div>
+            <div class="logo" onclick="window.location.href='/'" style="cursor: pointer;">VisaSlot</div>
             <nav class="nav-links">
-                <div class="nav-item" onclick="window.location.href='index.html'">Live Feed</div>
-                <div class="nav-item" onclick="window.location.href='timelines.html'">Timelines</div>
-                <div class="nav-item" onclick="window.location.href='admin.html'">Admin</div>
+                <div class="nav-item" onclick="window.location.href='/'">Live Feed</div>
+                <div class="nav-item" onclick="window.location.href='/timelines'">Timelines</div>
+                <div class="nav-item" onclick="window.location.href='/admin'">Admin</div>
             </nav>
         </div>
     </header>
@@ -68,22 +66,13 @@
                     Subscribe to Alerts
                 </button>
                 
-                <!-- Success Message Container -->
                 <div id="alertSuccessMessage" style="display: none; margin-top: 1rem; padding: 1rem; background: var(--success-bg); color: var(--success-color); border-radius: var(--radius-md); text-align: center; font-weight: 500;">
                     You are subscribed! We'll notify you when a slot opens up.
                 </div>
             </div>
         </div>
     </main>
-
-    <!-- UI Logic Placeholder -->
-    <script>
-        function submitAlert() {
-            console.log("Alert submission logic will be handled in js/alerts.js");
-        }
-    </script>
     
-    <!-- Supabase and Logic Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
     <script src="js/alerts.js"></script>
