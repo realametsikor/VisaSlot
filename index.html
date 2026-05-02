@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisaSlot | Live Appointment Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Extra styles for new Status Board and Feed Cards -->
+    <style>
+        .hero-stats {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            background: var(--secondary-color);
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+        .status-board {
+            margin-bottom: 1.5rem;
+        }
+        .status-board h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .status-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.9rem;
+        }
+        .status-row:last-child {
+            border-bottom: none;
+        }
+        .status-embassy {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .status-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        .status-badge {
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .status-green { background: var(--success-bg); color: var(--success-color); }
+        .status-red { background: #fee2e2; color: #ef4444; }
+        
+        /* New Feed Card Styles */
+        .slot-card.found { border-left: 4px solid var(--success-color); }
+        .slot-card.empty { border-left: 4px solid var(--text-secondary); }
+        .reporter-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">VisaSlot</div>
+            <nav class="nav-links">
+                <div class="nav-item active" onclick="window.location.href='index.html'">Live Feed</div>
+                <div class="nav-item" onclick="window.location.href='timelines.html'">Timelines</div>
+                <div class="nav-item" onclick="window.location.href='admin.html'">Admin</div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Find Your Visa Appointment Faster</h1>
+            <!-- NEW: Live Counter -->
+            <div id="statsCounter" class="hero-stats">Loading live stats...</div>
+            <p>Join the community tracking real-time embassy slot availability worldwide.</p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" onclick="window.location.href='report.html'">Report a Slot</button>
+                <button class="btn btn-secondary" onclick="window.location.href='alerts.html'">Get Alerts</button>
+            </div>
+        </section>
+
+        <!-- Tab Switcher -->
+        <div class="tabs">
+            <button class="tab active" onclick="window.location.href='index.html'">Slots</button>
+            <button class="tab" onclick="window.location.href='timelines.html'">Timelines</button>
+        </div>
+
+        <!-- Filter Bar -->
+        <section class="filters card">
+            <div class="filter-group">
+                <label for="countryFilter">Country</label>
+                <select id="countryFilter">
+                    <option value="all">All Countries</option>
+                    <option value="US">United States</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="CA">Canada</option>
+                    <option value="DE">Germany</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="visaFilter">Visa Category</label>
+                <select id="visaFilter">
+                    <option value="all">All Categories</option>
+                    <option value="F1">F1 Student</option>
+                    <option value="B1/B2">B1/B2 Tourist</option>
+                    <option value="H1B">H1B Work</option>
+                    <option value="Schengen">Schengen</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- NEW: Status Board -->
+        <section class="status-board card">
+            <h3>Embassy Watch — Recently Checked</h3>
+            <div id="statusBoardContainer" class="status-list">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p style="font-size: 0.85rem;">Fetching latest embassy status...</p>
+                </div>
+                <!-- Rows injected by feed.js -->
+            </div>
+        </section>
+
+        <!-- Live Feed Section -->
+        <section class="feed-section">
+            <div id="loadingState" class="loading-state">
+                <div class="spinner"></div>
+                <p>Loading live slots...</p>
+            </div>
+            <div id="feedContainer" class="feed-container"></div>
+        </section>
+    </main>
+
+    <script src="js/supabase.js"></script>
+    <script src="js/feed.js"></script>
+</body>
+</html>
