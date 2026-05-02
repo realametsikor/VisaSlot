@@ -4,23 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Processing Timelines | VisaSlot</title>
-    <!-- Link to our shared stylesheet -->
     <link rel="stylesheet" href="css/style.css">
-    
-    <!-- Chart.js CDN for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <!-- Shared Header/Nav -->
     <header class="navbar">
         <div class="nav-container">
-            <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">VisaSlot</div>
+            <div class="logo" onclick="window.location.href='/'" style="cursor: pointer;">VisaSlot</div>
             <nav class="nav-links">
-                <div class="nav-item" onclick="window.location.href='index.html'">Live Feed</div>
-                <div class="nav-item active" onclick="window.location.href='timelines.html'">Timelines</div>
-                <div class="nav-item" onclick="window.location.href='admin.html'">Admin</div>
+                <div class="nav-item" onclick="window.location.href='/'">Live Feed</div>
+                <div class="nav-item active" onclick="window.location.href='/timelines'">Timelines</div>
+                <div class="nav-item" onclick="window.location.href='/admin'">Admin</div>
             </nav>
         </div>
     </header>
@@ -28,27 +23,22 @@
     <main class="container">
         <!-- Tab Switcher -->
         <div class="tabs">
-            <button class="tab" onclick="window.location.href='index.html'">Slots</button>
-            <button class="tab active" onclick="window.location.href='timelines.html'">Timelines</button>
+            <button class="tab" onclick="window.location.href='/'">Slots</button>
+            <button class="tab active" onclick="window.location.href='/timelines'">Timelines</button>
         </div>
 
-        <!-- Chart Section -->
         <section class="card" style="margin-bottom: 2rem;">
             <h2 style="margin-bottom: 0.5rem; font-size: 1.25rem;">Average Processing Times</h2>
             <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
                 Community-reported days from submission to decision.
             </p>
-            
-            <!-- Canvas container for Chart.js -->
             <div style="position: relative; height: 350px; width: 100%;">
                 <canvas id="timelineChart"></canvas>
             </div>
         </section>
 
-        <!-- Data Submission Section -->
         <section class="card">
             <h3 style="margin-bottom: 1.5rem; font-size: 1.15rem;">Share Your Timeline</h3>
-            
             <div class="form-container">
                 <div class="form-group">
                     <label for="timelineEmbassy">Embassy City</label>
@@ -65,7 +55,6 @@
                     </select>
                 </div>
 
-                <!-- Side-by-side date inputs -->
                 <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                     <div class="form-group" style="flex: 1; min-width: 140px;">
                         <label for="dateSubmitted">Date Submitted</label>
@@ -89,7 +78,6 @@
                     Submit Timeline
                 </button>
                 
-                <!-- Success Message Container -->
                 <div id="timelineSuccessMessage" style="display: none; margin-top: 1rem; padding: 1rem; background: var(--success-bg); color: var(--success-color); border-radius: var(--radius-md); text-align: center; font-weight: 500;">
                     Thank you! Your timeline helps the community plan ahead.
                 </div>
@@ -97,7 +85,6 @@
         </section>
     </main>
 
-    <!-- Supabase and Logic Scripts -->
     <script src="js/supabase.js"></script>
     <script src="js/timelines.js"></script>
 </body>
