@@ -1,28 +1,22 @@
 /**
  * js/feed.js
- * 
- * Purpose: Handles fetching, processing, and displaying live slot data on index.html.
- * Dependencies: Requires supabaseClient to be initialized globally (via js/supabase.js).
  */
 
-// Run when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Initial data fetch
-    fetchFeedData();
+// NEW: Global array to hold our data for instant frontend filtering
+let globalFeedData = [];
 
-    // Set up auto-refresh every 60 seconds (60,000 milliseconds)
+document.addEventListener('DOMContentLoaded', () => {
+    fetchFeedData();
     setInterval(fetchFeedData, 60000);
     
-    // Optional: Set up Supabase Realtime for instant updates on INSERT
-    setupRealtimeSubscription();
+    // NEW: Add event listeners to our filter inputs
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('countryFilter').addEventListener('change', applyFilters);
+    document.getElementById('visaFilter').addEventListener('change', applyFilters);
 });
 
-/**
- * Main function to fetch data from Supabase and update all UI sections
- */
 async function fetchFeedData() {
     try {
-        // Fetch all reports, ordered by newest first
         const { data, error } = await supabaseClient
             .from('slot_reports')
             .select('*')
@@ -31,11 +25,13 @@ async function fetchFeedData() {
         if (error) throw error;
 
         if (data) {
+            // NEW: Store data globally, then apply filters before updating the feed
+            globalFeedData = data; 
+            
             updateStatsCounter(data);
             updateStatusBoard(data);
-            updateLiveFeed(data);
+            applyFilters(); 
             
-            // Hide the loading spinner on the live feed
             document.getElementById('loadingState').style.display = 'none';
         }
     } catch (error) {
@@ -44,21 +40,33 @@ async function fetchFeedData() {
     }
 }
 
-/**
- * 1. Updates the Hero Stats Counter
- * "X embassies watched · Y slots reported today"
- */
-function updateStatsCounter(data) {
-    // Calculate unique embassies using a Set
-    const uniqueEmbassies = new Set(data.map(item => item.embassy)).size;
+// NEW: Filtering Logic
+function applyFilters() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const country = document.getElementById('countryFilter').value;
+    const visa = document.getElementById('visaFilter').value;
 
-    // Calculate slots reported today
+    const filteredData = globalFeedData.filter(report => {
+        // Check if embassy name matches the search text
+        const matchesSearch = report.embassy.toLowerCase().includes(searchTerm);
+        // Check if country matches (or if 'all' is selected)
+        const matchesCountry = country === 'all' || report.country === country;
+        // Check if visa matches (or if 'all' is selected)
+        const matchesVisa = visa === 'all' || report.visa_category === visa;
+
+        return matchesSearch && matchesCountry && matchesVisa;
+    });
+
+    updateLiveFeed(filteredData);
+}
+
+function updateStatsCounter(data) {
+    const uniqueEmbassies = new Set(data.map(item => item.embassy)).size;
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set to start of today
+    today.setHours(0, 0, 0, 0); 
 
     const slotsToday = data.filter(item => {
         const reportDate = new Date(item.reported_at);
-        // Only count if slot_found is true AND it was reported today
         return item.slot_found === true && reportDate >= today;
     }).length;
 
@@ -68,26 +76,19 @@ function updateStatsCounter(data) {
     }
 }
 
-/**
- * 2. Updates the "Embassy Watch" Status Board
- * Groups by embassy + visa category, takes the newest report.
- */
 function updateStatusBoard(data) {
     const boardContainer = document.getElementById('statusBoardContainer');
     if (!boardContainer) return;
 
-    // Grouping logic to find the latest report per embassy + visa category
     const latestReports = {};
 
     data.forEach(report => {
         const key = `${report.embassy}-${report.visa_category}`;
-        // Since data is ordered DESC, the first one we hit for a key is the newest
         if (!latestReports[key]) {
             latestReports[key] = report;
         }
     });
 
-    // Convert object back to array, sort by reported_at DESC, limit to 10
     const boardRows = Object.values(latestReports)
         .sort((a, b) => new Date(b.reported_at) - new Date(a.reported_at))
         .slice(0, 10);
@@ -97,7 +98,6 @@ function updateStatusBoard(data) {
         return;
     }
 
-    // Generate HTML for the rows
     let html = '';
     boardRows.forEach(row => {
         const timeAgo = timeSince(new Date(row.reported_at));
@@ -119,27 +119,20 @@ function updateStatusBoard(data) {
     boardContainer.innerHTML = html;
 }
 
-/**
- * 3. Updates the Live Feed Section
- * Generates cards based on whether a slot was found or not.
- */
 function updateLiveFeed(data) {
     const feedContainer = document.getElementById('feedContainer');
     if (!feedContainer) return;
 
     if (data.length === 0) {
-        feedContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No slots reported yet. Be the first to report!</p>';
+        feedContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No slots match your search. Be the first to report!</p>';
         return;
     }
 
     let html = '';
     data.forEach(report => {
         const timeAgo = timeSince(new Date(report.reported_at));
-        
-        // Determine card styling based on slot_found boolean
         const cardClass = report.slot_found ? 'found' : 'empty';
         
-        // If slot found, show the date. If not, show "Checked — no slots"
         const dateDisplay = report.slot_found 
             ? `<span class="badge badge-date">📅 ${formatDate(report.slot_date_seen)}</span>`
             : `<span class="badge" style="background: #e2e8f0; color: var(--text-secondary);">Checked — no slots</span>`;
@@ -164,27 +157,6 @@ function updateLiveFeed(data) {
     feedContainer.innerHTML = html;
 }
 
-/**
- * Optional: Supabase Realtime Subscription
- * Listens for new rows added to slot_reports and refreshes the feed.
- */
-function setupRealtimeSubscription() {
-    try {
-        supabaseClient
-            .channel('public:slot_reports')
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'slot_reports' }, payload => {
-                console.log('New report detected in realtime!', payload);
-                fetchFeedData(); // Re-fetch to update UI smoothly
-            })
-            .subscribe();
-    } catch (error) {
-        console.error("Realtime subscription failed:", error);
-    }
-}
-
-/**
- * Helper Utility: Calculates "Time Ago" string
- */
 function timeSince(date) {
     const seconds = Math.floor((new Date() - date) / 1000);
     let interval = seconds / 31536000;
@@ -200,9 +172,6 @@ function timeSince(date) {
     return Math.floor(seconds) + " seconds ago";
 }
 
-/**
- * Helper Utility: Formats date string safely
- */
 function formatDate(dateString) {
     if (!dateString) return 'Unknown Date';
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
