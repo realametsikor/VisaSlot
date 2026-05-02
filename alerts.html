@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Alerts | VisaSlot</title>
+    <!-- Link to our shared stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .alert-intro {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Shared Header/Nav -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">VisaSlot</div>
+            <nav class="nav-links">
+                <div class="nav-item" onclick="window.location.href='index.html'">Live Feed</div>
+                <div class="nav-item" onclick="window.location.href='timelines.html'">Timelines</div>
+                <div class="nav-item" onclick="window.location.href='admin.html'">Admin</div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="card">
+            <h2>Get Slot Alerts</h2>
+            <p class="alert-intro">Don't want to keep refreshing? Tell us where you are applying, and we'll email you the moment someone reports an available slot.</p>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="alertEmail">Email Address</label>
+                    <input type="email" id="alertEmail" placeholder="you@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="alertCountry">Country</label>
+                    <select id="alertCountry">
+                        <option value="US">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="CA">Canada</option>
+                        <option value="DE">Germany</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="alertEmbassy">Embassy City</label>
+                    <input type="text" id="alertEmbassy" placeholder="e.g., London, Mumbai, Berlin">
+                </div>
+
+                <div class="form-group">
+                    <label for="alertVisaCategory">Visa Category</label>
+                    <select id="alertVisaCategory">
+                        <option value="F1">F1 Student</option>
+                        <option value="B1/B2">B1/B2 Tourist</option>
+                        <option value="H1B">H1B Work</option>
+                        <option value="Schengen">Schengen</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary" onclick="submitAlert()" style="margin-top: 1rem; width: 100%;">
+                    Subscribe to Alerts
+                </button>
+                
+                <!-- Success Message Container -->
+                <div id="alertSuccessMessage" style="display: none; margin-top: 1rem; padding: 1rem; background: var(--success-bg); color: var(--success-color); border-radius: var(--radius-md); text-align: center; font-weight: 500;">
+                    You are subscribed! We'll notify you when a slot opens up.
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- UI Logic Placeholder -->
+    <script>
+        function submitAlert() {
+            console.log("Alert submission logic will be handled in js/alerts.js");
+        }
+    </script>
+    
+    <!-- Supabase and Logic Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/alerts.js"></script>
+</body>
+</html>
