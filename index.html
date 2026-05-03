@@ -595,18 +595,14 @@
         .hero-actions .btn { width: 100%; text-align: center; }
         .status-row { flex-wrap: wrap; gap: 6px; }
     }
-</style>
-
+    </style>
 </head>
 <body>
 
 <!-- LIVE TICKER -->
 <div class="live-ticker-wrap">
-    <div class="live-ticker">
-        <span><span class="ticker-fire">🔥</span> US Embassy - London: F1 Slot reported 2 mins ago</span>
-        <span><span class="ticker-fire">🔥</span> US Embassy - Accra: B1/B2 Slot reported 8 mins ago</span>
-        <span>⚡ Canada Embassy - Delhi: Student Slot reported 15 mins ago</span>
-        <span><span class="ticker-fire">🔥</span> US Embassy - London: F1 Slot reported 2 mins ago</span>
+    <div class="live-ticker" id="liveTickerContent">
+        <span><span class="ticker-fire">⏳</span> Loading live network data...</span>
     </div>
 </div>
 
@@ -755,6 +751,7 @@
         </button>
     </section>
 
+</main>
 
 <!-- NEW: TRUST MODAL -->
 <div class="modal-overlay" id="trustModal">
