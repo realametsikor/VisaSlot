@@ -3,28 +3,28 @@
 
    <!-- Homepage / Live Feed -->
    <url>
-      <loc>https://visa-slot.vercel.app/</loc>
+      <loc>https://www.visaslot.live/</loc>
       <changefreq>hourly</changefreq>
       <priority>1.0</priority>
    </url>
 
    <!-- Processing Timelines -->
    <url>
-      <loc>https://visa-slot.vercel.app/timelines</loc>
+      <loc>https://www.visaslot.live/timelines</loc>
       <changefreq>daily</changefreq>
       <priority>0.8</priority>
    </url>
 
    <!-- Report a Slot -->
    <url>
-      <loc>https://visa-slot.vercel.app/report</loc>
+      <loc>https://www.visaslot.live/report</loc>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
    </url>
 
    <!-- Get Alerts -->
    <url>
-      <loc>https://visa-slot.vercel.app/alerts</loc>
+      <loc>https://www.visaslot.live/alerts</loc>
       <changefreq>monthly</changefreq>
       <priority>0.7</priority>
    </url>
