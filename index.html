@@ -717,25 +717,39 @@
         </div>
     </section>
     
-    <!-- NEW: INSIGHTS BOARD -->
-    <section class="status-board insights-board card">
+        <!-- INSIGHTS BOARD -->
+    <section class="status-board insights-board card" style="margin-bottom: 20px;">
         <div class="status-board-header">
             <h3>💡 Platform Insights</h3>
         </div>
         <div class="status-list">
             <div class="status-row">
                 <span style="color: var(--text-muted); font-weight: 600;">📈 Peak Drops:</span> 
-                <span id="insightPeak" style="color: var(--text); font-weight: 500;">Tuesdays 2am GMT</span>
+                <span id="insightPeak" style="color: var(--text); font-weight: 500;">Calculating...</span>
             </div>
             <div class="status-row">
-                <span style="color: var(--text-muted); font-weight: 600;">🏆 Top Helper:</span> 
-                <span id="insightHelper" style="color: var(--text); font-weight: 500;">User_882 (12 reports)</span>
+                <span style="color: var(--text-muted); font-weight: 600;">🔥 Hottest Embassy:</span> 
+                <span id="insightHottest" style="color: var(--text); font-weight: 500;">Calculating...</span>
             </div>
             <div class="status-row">
-                <span style="color: var(--text-muted); font-weight: 600;">⚡ Fastest booking:</span> 
-                <span id="insightFastest" style="color: var(--text); font-weight: 500;">London (4 mins)</span>
+                <span style="color: var(--text-muted); font-weight: 600;">🛡️ Most Trusted:</span> 
+                <span id="insightTrusted" style="color: var(--text); font-weight: 500;">Calculating...</span>
             </div>
         </div>
+    </section>
+
+    <!-- LIVE FEED (THE LOGS & VOTING BUTTONS) -->
+    <section class="feed-section">
+        <div id="loadingState" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading live slots...</p>
+        </div>
+        <div id="feedContainer" class="feed-container">
+            <!-- JavaScript will inject all the reports and voting buttons here -->
+        </div>
+        <button id="loadMoreBtn" class="btn btn-secondary" onclick="loadMore()">
+            Load More Slots
+        </button>
     </section>
 
 
