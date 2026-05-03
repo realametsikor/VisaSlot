@@ -6,6 +6,15 @@
     <title>Get Alerts | VisaSlot</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
+        /* Shared Logo Styles */
+        .logo { display: flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; }
+        .logo-pulse { width: 10px; height: 10px; background: var(--blue, #3b6ef8); border-radius: 50%; position: relative; flex-shrink: 0; }
+        .logo-pulse::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: var(--blue, #3b6ef8); opacity: 0.3; animation: pulse-ring 1.8s ease-out infinite; }
+        @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 0.4; } 100% { transform: scale(2); opacity: 0; } }
+        .logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+        .logo-visa { color: var(--navy, #0f1a3e); }
+        .logo-slot { color: var(--blue, #3b6ef8); }
+        
         .alert-intro {
             margin-bottom: 1.5rem;
             color: var(--text-secondary);
@@ -17,7 +26,10 @@
 <body>
     <header class="navbar">
         <div class="nav-container">
-            <div class="logo" onclick="window.location.href='/'" style="cursor: pointer;">VisaSlot</div>
+            <div class="logo" onclick="window.location.href='/'">
+                <div class="logo-pulse"></div>
+                <div class="logo-text"><span class="logo-visa">Visa</span><span class="logo-slot">Slot</span></div>
+            </div>
             <nav class="nav-links">
                 <div class="nav-item" onclick="window.location.href='/'">Live Feed</div>
                 <div class="nav-item" onclick="window.location.href='/timelines'">Timelines</div>
@@ -27,7 +39,7 @@
     </header>
 
     <main class="container">
-        <div class="card">
+        <div class="card" style="margin-top: 2rem;">
             <h2>Get Slot Alerts</h2>
             <p class="alert-intro">Don't want to keep refreshing? Tell us where you are applying, and we'll email you the moment someone reports an available slot.</p>
             
@@ -73,6 +85,10 @@
         </div>
     </main>
     
+    <footer style="text-align: center; padding: 2rem; margin-top: 2rem; border-top: 1px solid rgba(0,0,0,0.07); color: #6b7280; font-size: 0.9rem;">
+        &copy; 2026 VisaSlot. Community-powered intelligence.
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase.js"></script>
     <script src="js/alerts.js"></script>
