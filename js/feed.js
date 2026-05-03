@@ -18,6 +18,7 @@ const ITEMS_PER_PAGE = 15;
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchFeedData(false);
+    loadPlatformInsights(); 
     
     // Listen for filter changes
     const searchInput = document.getElementById('searchInput');
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (countryFilter) countryFilter.addEventListener('change', applyFilters);
     if (visaFilter) visaFilter.addEventListener('change', applyFilters);
 });
+
 
 let timeoutId;
 function debounce(func, delay) {
