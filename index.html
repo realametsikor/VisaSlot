@@ -134,12 +134,6 @@
     }
     .nav-item:hover { background: var(--blue-light); color: var(--blue); }
     .nav-item.active { background: var(--blue-light); color: var(--blue); }
-    
-    /* Highlighted Trust Link */
-    .nav-trust {
-        background: #fff8eb; color: #d97706; border: 1px solid #fde68a;
-    }
-    .nav-trust:hover { background: #fef3c7; color: #b45309; }
 
     /* ── CONTAINER ── */
     .container {
@@ -629,7 +623,6 @@
             <div class="nav-item active" onclick="window.location.href='/'">Live Feed</div>
             <div class="nav-item" onclick="window.location.href='/timelines'">Timelines</div>
             <div class="nav-item" onclick="window.location.href='/admin'">Admin</div>
-            <div class="nav-item nav-trust" onclick="document.getElementById('trustModal').style.display='flex'">🛡️ Why Trust Us?</div>
         </nav>
     </div>
 </header>
@@ -664,6 +657,16 @@
         <div class="hero-actions">
             <button class="btn btn-primary" onclick="window.location.href='/report'"> Report a Slot</button>
             <button class="btn btn-secondary" onclick="window.location.href='/alerts'">🔔 Get Alerts</button>
+        </div>
+        
+        <!-- NEW PLACEMENT: Trust Button -->
+        <div style="margin-top: 24px; text-align: center;">
+            <button style="background: #fff8eb; color: #d97706; border: 1px solid #fde68a; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; transition: all 0.2s ease;" 
+                    onmouseover="this.style.background='#fef3c7'" 
+                    onmouseout="this.style.background='#fff8eb'"
+                    onclick="document.getElementById('trustModal').style.display='flex'">
+                🛡️ Why Trust Us?
+            </button>
         </div>
     </section>
 
@@ -717,7 +720,7 @@
         </div>
     </section>
     
-        <!-- INSIGHTS BOARD -->
+    <!-- INSIGHTS BOARD -->
     <section class="status-board insights-board card" style="margin-bottom: 20px;">
         <div class="status-board-header">
             <h3>💡 Platform Insights</h3>
