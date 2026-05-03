@@ -310,6 +310,7 @@ function formatDate(dateString) {
     const d = new Date(dateString.includes('T') ? dateString : dateString + 'T12:00:00');
     return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 }
+
 // --- PLATFORM INSIGHTS ---
 async function loadPlatformInsights() {
     try {
