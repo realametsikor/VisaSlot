@@ -1,6 +1,6 @@
 /**
  * js/feed.js
- * Merged: Bulletproof Safety Checks, Backend Filtering, Pagination, and Trust System!
+ * Merged: Bulletproof Safety Checks, Backend Filtering, Pagination, Trust System, and Live Ticker!
  */
 
 // --- TRUST SYSTEM SETUP ---
@@ -19,6 +19,7 @@ const ITEMS_PER_PAGE = 15;
 document.addEventListener('DOMContentLoaded', () => {
     fetchFeedData(false);
     loadPlatformInsights(); 
+    loadLiveTicker(); // Initialize the dynamic live ticker
     
     // Listen for filter changes
     const searchInput = document.getElementById('searchInput');
@@ -29,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (countryFilter) countryFilter.addEventListener('change', applyFilters);
     if (visaFilter) visaFilter.addEventListener('change', applyFilters);
 });
-
 
 let timeoutId;
 function debounce(func, delay) {
@@ -330,5 +330,43 @@ async function loadPlatformInsights() {
         document.getElementById('insightPeak').textContent = 'Data unavailable';
         document.getElementById('insightHottest').textContent = 'Data unavailable';
         document.getElementById('insightTrusted').textContent = 'Data unavailable';
+    }
+}
+
+// --- LIVE TICKER ---
+async function loadLiveTicker() {
+    const tickerContainer = document.getElementById('liveTickerContent');
+    if (!tickerContainer) return;
+
+    try {
+        // Query the database for the 5 most recent reports where a slot was found
+        const { data, error } = await supabaseClient
+            .from('slot_reports')
+            .select('embassy, country, visa_category, reported_at')
+            .eq('slot_found', true) // Only show actual found slots
+            .order('reported_at', { ascending: false })
+            .limit(5);
+
+        if (error) throw error;
+
+        // If we have data, build the HTML for the scrolling spans
+        if (data && data.length > 0) {
+            let tickerHtml = '';
+            
+            data.forEach(slot => {
+                const timeAgo = timeSince(new Date(slot.reported_at));
+                const countryText = slot.country ? `, ${slot.country}` : '';
+                
+                tickerHtml += `<span><span class="ticker-fire">🔥</span> ${slot.embassy}${countryText}: ${slot.visa_category} Slot reported ${timeAgo}</span>`;
+            });
+            
+            // Inject the HTML twice so the CSS infinite animation loops smoothly without gaps
+            tickerContainer.innerHTML = tickerHtml + tickerHtml;
+        } else {
+            tickerContainer.innerHTML = `<span><span class="ticker-fire">ℹ️</span> Waiting for live community reports...</span>`;
+        }
+    } catch (err) {
+        console.error('Error loading live ticker:', err);
+        tickerContainer.innerHTML = `<span><span class="ticker-fire">⚠️</span> Error loading live network data.</span>`;
     }
 }
