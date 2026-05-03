@@ -1,98 +1,657 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VisaSlot | Live Appointment Tracker</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --bg: #f0f4ff;
+            --surface: #ffffff;
+            --surface2: #f7f9ff;
+            --border: rgba(59, 110, 248, 0.1);
+            --border-hard: rgba(0,0,0,0.07);
+            --blue: #3b6ef8;
+            --blue-dark: #2952d9;
+            --blue-light: #eef2ff;
+            --navy: #0f1a3e;
+            --green: #16a34a;
+            --green-light: #f0fdf4;
+            --green-border: #22c55e;
+            --red: #dc2626;
+            --red-light: #fff1f2;
+            --red-border: #f87171;
+            --text: #1a1a2e;
+            --text-muted: #6b7280;
+            --text-light: #9ca3af;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.09);
+            --shadow-lg: 0 8px 32px rgba(59,110,248,0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAVBAR ── */
+    .navbar {
+        background: rgba(255,255,255,0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-hard);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 1px 12px rgba(0,0,0,0.06);
+    }
+    .nav-container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 20px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .logo-pulse {
+        width: 10px;
+        height: 10px;
+        background: var(--blue);
+        border-radius: 50%;
+        position: relative;
+        flex-shrink: 0;
+    }
+    .logo-pulse::after {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+        background: var(--blue);
+        opacity: 0.3;
+        animation: pulse-ring 1.8s ease-out infinite;
+    }
+    @keyframes pulse-ring {
+        0% { transform: scale(0.8); opacity: 0.4; }
+        100% { transform: scale(2); opacity: 0; }
+    }
+    .logo-text {
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+    .logo-visa { color: var(--navy); }
+    .logo-slot { color: var(--blue); }
+
+    .nav-links { display: flex; gap: 4px; }
+    .nav-item {
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+    .nav-item:hover { background: var(--blue-light); color: var(--blue); }
+    .nav-item.active { background: var(--blue-light); color: var(--blue); }
+
+    /* ── CONTAINER ── */
+    .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 20px 60px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+        padding: 52px 0 36px;
+        text-align: center;
+    }
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--blue-light);
+        border: 1px solid rgba(59,110,248,0.2);
+        color: var(--blue);
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px 14px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        font-family: 'DM Mono', monospace;
+        letter-spacing: 0.3px;
+    }
+    .hero-badge-dot {
+        width: 6px; height: 6px;
+        background: var(--blue);
+        border-radius: 50%;
+        animation: blink 1.4s ease-in-out infinite;
+    }
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+    .hero h1 {
+        font-size: clamp(28px, 5vw, 46px);
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -1px;
+        color: var(--navy);
+        margin-bottom: 16px;
+        max-width: 580px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .hero h1 span { color: var(--blue); }
+    .hero-sub {
+        font-size: 15px;
+        color: var(--text-muted);
+        margin-bottom: 32px;
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.6;
+    }
+
+    /* Stat cards row */
+    .stat-cards {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+    }
+    .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border-hard);
+        border-radius: var(--radius-sm);
+        padding: 14px 20px;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+        min-width: 110px;
+        flex: 1;
+        max-width: 160px;
+    }
+    .stat-number {
+        font-size: 26px;
+        font-weight: 800;
+        color: var(--blue);
+        font-family: 'DM Mono', monospace;
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+    .stat-label {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-light);
+    }
+
+    /* CTA buttons */
+    .hero-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .btn {
+        padding: 13px 28px;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, var(--blue), #6366f1);
+        color: white;
+        box-shadow: 0 4px 18px rgba(59,110,248,0.35);
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(59,110,248,0.45);
+    }
+    .btn-secondary {
+        background: var(--surface);
+        color: var(--navy);
+        border: 1.5px solid var(--border-hard);
+        box-shadow: var(--shadow-sm);
+    }
+    .btn-secondary:hover {
+        background: var(--blue-light);
+        border-color: var(--blue);
+        color: var(--blue);
+        transform: translateY(-2px);
+    }
+
+    /* ── TABS ── */
+    .tabs {
+        display: flex;
+        background: var(--surface);
+        border: 1px solid var(--border-hard);
+        border-radius: var(--radius-sm);
+        padding: 4px;
+        margin-bottom: 20px;
+        box-shadow: var(--shadow-sm);
+    }
+    .tab {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .tab.active {
+        background: var(--blue);
+        color: white;
+        box-shadow: 0 2px 8px rgba(59,110,248,0.3);
+    }
+
+    /* ── FILTERS ── */
+    .card {
+        background: var(--surface);
+        border: 1px solid var(--border-hard);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+    }
+    .filters {
+        padding: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+        min-width: 140px;
+    }
+    .filter-group label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-muted);
+    }
+    .filter-group input,
+    .filter-group select {
+        padding: 10px 14px;
+        border: 1.5px solid #e5e9f5;
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--text);
+        background: var(--surface2);
+        outline: none;
+        transition: border-color 0.15s;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+    .filter-group input:focus,
+    .filter-group select:focus {
+        border-color: var(--blue);
+        background: white;
+    }
+
+    /* ── STATUS BOARD ── */
+    .status-board {
+        padding: 20px;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #fafbff, #f0f4ff);
+    }
+    .status-board-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+    .status-board h3 {
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--navy);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .live-indicator {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--green);
+        font-family: 'DM Mono', monospace;
+    }
+    .live-dot {
+        width: 6px; height: 6px;
+        background: var(--green);
+        border-radius: 50%;
+        animation: blink 1.4s ease-in-out infinite;
+    }
+    .status-list { display: flex; flex-direction: column; gap: 8px; }
+    .status-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        background: white;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border-hard);
+        transition: all 0.15s ease;
+        gap: 8px;
+    }
+    .status-row:hover { border-color: rgba(59,110,248,0.2); transform: translateX(2px); }
+    .status-embassy {
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--navy);
+        flex: 1;
+    }
+    .status-meta {
+        font-size: 11px;
+        color: var(--text-light);
+        font-family: 'DM Mono', monospace;
+        flex-shrink: 0;
+    }
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    .badge-available {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+        box-shadow: 0 2px 8px rgba(34,197,94,0.3);
+    }
+    .badge-none {
+        background: var(--red-light);
+        color: var(--red);
+        border: 1px solid rgba(220,38,38,0.15);
+    }
+
+    /* ── FEED CARDS ── */
+    .feed-section { margin-top: 4px; }
+    .feed-container { display: flex; flex-direction: column; gap: 12px; }
+
+    .slot-card {
+        background: var(--surface);
+        border: 1px solid var(--border-hard);
+        border-radius: var(--radius);
+        padding: 18px 20px;
+        box-shadow: var(--shadow-md);
+        border-left: 4px solid transparent;
+        transition: all 0.2s ease;
+        animation: fadeUp 0.3s ease both;
+    }
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .slot-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .slot-card.found { border-left-color: var(--green-border); background: linear-gradient(to right, rgba(240,253,244,0.6), white); }
+    .slot-card.not-found { border-left-color: #d1d5db; background: white; }
+
+    .card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+    .card-embassy {
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--navy);
+        line-height: 1.2;
+    }
+    .card-time {
+        font-size: 12px;
+        color: var(--text-light);
+        font-family: 'DM Mono', monospace;
+        white-space: nowrap;
+        background: var(--surface2);
+        padding: 3px 8px;
+        border-radius: 6px;
+        flex-shrink: 0;
+    }
+    .card-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .tag-date {
+        background: #eff6ff;
+        color: var(--blue);
+        border: 1px solid rgba(59,110,248,0.15);
+    }
+    .tag-category {
+        background: var(--surface2);
+        color: var(--text-muted);
+        border: 1px solid var(--border-hard);
+    }
+    .tag-noslot {
+        background: #f3f4f6;
+        color: #6b7280;
+        border: 1px solid #e5e7eb;
+    }
+    .card-footer {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-light);
+        padding-top: 8px;
+        border-top: 1px solid #f3f4f6;
+    }
+    .human-dot {
+        width: 6px; height: 6px;
+        background: var(--blue);
+        border-radius: 50%;
+        opacity: 0.5;
+    }
+
+    /* ── LOADING ── */
+    .loading-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        gap: 12px;
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+    .spinner {
+        width: 28px; height: 28px;
+        border: 3px solid var(--blue-light);
+        border-top-color: var(--blue);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── LOAD MORE ── */
+    #loadMoreBtn {
+        width: 100%;
+        margin-top: 16px;
+        display: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+        .hero { padding: 36px 0 28px; }
+        .stat-cards { gap: 8px; }
+        .stat-card { min-width: 90px; padding: 12px 14px; }
+        .stat-number { font-size: 22px; }
+        .filters { flex-direction: column; gap: 12px; }
+        .hero-actions { flex-direction: column; }
+        .hero-actions .btn { width: 100%; text-align: center; }
+        .status-row { flex-wrap: wrap; gap: 6px; }
+    }
+</style>
+
 </head>
 <body>
-    <header class="navbar">
-        <div class="nav-container">
-            <div class="logo" onclick="window.location.href='/'" style="cursor: pointer;">VisaSlot</div>
-            <nav class="nav-links">
-                <div class="nav-item active" onclick="window.location.href='/'">Live Feed</div>
-                <div class="nav-item" onclick="window.location.href='/timelines'">Timelines</div>
-                <div class="nav-item" onclick="window.location.href='/admin'">Admin</div>
-            </nav>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-container">
+        <div class="logo" onclick="window.location.href='/'">
+            <div class="logo-pulse"></div>
+            <div class="logo-text">
+                <span class="logo-visa">Visa</span><span class="logo-slot">Slot</span>
+            </div>
         </div>
-    </header>
+        <nav class="nav-links">
+            <div class="nav-item active" onclick="window.location.href='/'">Live Feed</div>
+            <div class="nav-item" onclick="window.location.href='/timelines'">Timelines</div>
+            <div class="nav-item" onclick="window.location.href='/admin'">Admin</div>
+        </nav>
+    </div>
+</header>
 
-    <main class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <h1>Find Your Visa Appointment Faster</h1>
-            <div id="statsCounter" class="hero-stats">Loading live stats...</div>
-            <p>Join the community tracking real-time embassy slot availability worldwide.</p>
-            <div class="hero-actions">
-                <button class="btn btn-primary" onclick="window.location.href='/report'">Report a Slot</button>
-                <button class="btn btn-secondary" onclick="window.location.href='/alerts'">Get Alerts</button>
+<main class="container">
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            Live · Community Powered
+        </div>
+        <h1>Find Your Visa Appointment <span>Faster</span></h1>
+        <p class="hero-sub">Join the community tracking real-time embassy slot availability worldwide.</p>
+
+        <!-- Stat Cards -->
+        <div class="stat-cards">
+            <div class="stat-card">
+                <div class="stat-number" id="statEmbassies">—</div>
+                <div class="stat-label">Embassies</div>
             </div>
-        </section>
-
-        <!-- Tab Switcher -->
-        <div class="tabs">
-            <button class="tab active" onclick="window.location.href='/'">Slots</button>
-            <button class="tab" onclick="window.location.href='/timelines'">Timelines</button>
+            <div class="stat-card">
+                <div class="stat-number" id="statSlots">—</div>
+                <div class="stat-label">Slots Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="statReports">—</div>
+                <div class="stat-label">Reports</div>
+            </div>
         </div>
 
-        <!-- Filter Bar with Live Search -->
-        <section class="filters card">
-            <div class="filter-group" style="flex: 2;">
-                <label for="searchInput">Search Embassy</label>
-                <input type="text" id="searchInput" placeholder="e.g., London, Mumbai, Berlin...">
-            </div>
-            <div class="filter-group">
-                <label for="countryFilter">Country</label>
-                <select id="countryFilter">
-                    <option value="all">All Countries</option>
-                    <option value="US">United States</option>
-                    <option value="UK">United Kingdom</option>
-                    <option value="CA">Canada</option>
-                    <option value="DE">Germany</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="visaFilter">Visa Category</label>
-                <select id="visaFilter">
-                    <option value="all">All Categories</option>
-                    <option value="F1">F1 Student</option>
-                    <option value="B1/B2">B1/B2 Tourist</option>
-                    <option value="H1B">H1B Work</option>
-                    <option value="Schengen">Schengen</option>
-                </select>
-            </div>
-        </section>
+        <div class="hero-actions">
+            <button class="btn btn-primary" onclick="window.location.href='/report'">⚡ Report a Slot</button>
+            <button class="btn btn-secondary" onclick="window.location.href='/alerts'">🔔 Get Alerts</button>
+        </div>
+    </section>
 
-        <!-- Status Board -->
-        <section class="status-board card">
-            <h3>Embassy Watch — Recently Checked</h3>
-            <div id="statusBoardContainer" class="status-list">
-                <div class="loading-state">
-                    <div class="spinner"></div>
-                    <p style="font-size: 0.85rem;">Fetching latest embassy status...</p>
-                </div>
-            </div>
-        </section>
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab active" onclick="window.location.href='/'">Slots ⚡</button>
+        <button class="tab" onclick="window.location.href='/timelines'">Timelines 📊</button>
+    </div>
 
-        <!-- Live Feed Section -->
-        <section class="feed-section">
-            <div id="loadingState" class="loading-state">
+    <!-- FILTERS -->
+    <section class="filters card">
+        <div class="filter-group" style="flex: 2;">
+            <label for="searchInput">Search Embassy</label>
+            <input type="text" id="searchInput" placeholder="e.g., London, Mumbai, Berlin...">
+        </div>
+        <div class="filter-group">
+            <label for="countryFilter">Country</label>
+            <select id="countryFilter">
+                <option value="all">All Countries</option>
+                <option value="US">United States</option>
+                <option value="UK">United Kingdom</option>
+                <option value="CA">Canada</option>
+                <option value="DE">Germany</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="visaFilter">Visa Category</label>
+            <select id="visaFilter">
+                <option value="all">All Categories</option>
+                <option value="F1">F1 Student</option>
+                <option value="B1/B2">B1/B2 Tourist</option>
+                <option value="H1B">H1B Work</option>
+                <option value="Schengen">Schengen</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- STATUS BOARD -->
+    <section class="status-board card">
+        <div class="status-board-header">
+            <h3>🛰 Embassy Watch</h3>
+            <div class="live-indicator">
+                <span class="live-dot"></span> Live
+            </div>
+        </div>
+        <div id="statusBoardContainer" class="status-list">
+            <div class="loading-state">
                 <div class="spinner"></div>
-                <p>Loading live slots...</p>
+                <p style="font-size: 0.85rem;">Fetching embassy status...</p>
             </div>
-            
-            <div id="feedContainer" class="feed-container"></div>
-            
-            <!-- Load More Button -->
-            <button id="loadMoreBtn" class="btn btn-secondary" onclick="loadMore()" style="display: none; width: 100%; margin-top: 1.5rem;">
-                Load More Slots
-            </button>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <script src="js/supabase.js"></script>
-    <script src="js/feed.js"></script>
+    <!-- LIVE FEED -->
+    <section class="feed-section">
+        <div id="loadingState" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading live slots...</p>
+        </div>
+        <div id="feedContainer" class="feed-container"></div>
+        <button id="loadMoreBtn" class="btn btn-secondary" onclick="loadMore()">
+            Load More Slots
+        </button>
+    </section>
+
+</main>
+
+<script src="js/supabase.js"></script>
+<script src="js/feed.js"></script>
+
 </body>
 </html>
