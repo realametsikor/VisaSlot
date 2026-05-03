@@ -310,3 +310,22 @@ function formatDate(dateString) {
     const d = new Date(dateString.includes('T') ? dateString : dateString + 'T12:00:00');
     return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 }
+// --- PLATFORM INSIGHTS ---
+async function loadPlatformInsights() {
+    try {
+        const { data, error } = await supabaseClient.rpc('get_platform_insights');
+        
+        if (error) throw error;
+        
+        if (data) {
+            document.getElementById('insightPeak').textContent = data.peak_time;
+            document.getElementById('insightHottest').textContent = data.hottest;
+            document.getElementById('insightTrusted').textContent = data.most_verified;
+        }
+    } catch (err) {
+        console.error('Error loading insights:', err);
+        document.getElementById('insightPeak').textContent = 'Data unavailable';
+        document.getElementById('insightHottest').textContent = 'Data unavailable';
+        document.getElementById('insightTrusted').textContent = 'Data unavailable';
+    }
+}
