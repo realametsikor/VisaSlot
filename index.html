@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -42,6 +41,29 @@
         color: var(--text);
         min-height: 100vh;
         -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NEW: LIVE TICKER ── */
+    .live-ticker-wrap {
+        background: var(--navy);
+        color: white;
+        font-family: 'DM Mono', monospace;
+        font-size: 12px;
+        padding: 8px 0;
+        overflow: hidden;
+        white-space: nowrap;
+        display: flex;
+    }
+    .live-ticker {
+        display: inline-block;
+        padding-left: 100%;
+        animation: ticker 25s linear infinite;
+    }
+    .live-ticker span { margin-right: 40px; }
+    .ticker-fire { color: #facc15; }
+    @keyframes ticker {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(-100%, 0); }
     }
 
     /* ── NAVBAR ── */
@@ -100,7 +122,7 @@
     .logo-visa { color: var(--navy); }
     .logo-slot { color: var(--blue); }
 
-    .nav-links { display: flex; gap: 4px; }
+    .nav-links { display: flex; gap: 4px; align-items: center; }
     .nav-item {
         padding: 6px 14px;
         border-radius: 8px;
@@ -112,6 +134,12 @@
     }
     .nav-item:hover { background: var(--blue-light); color: var(--blue); }
     .nav-item.active { background: var(--blue-light); color: var(--blue); }
+    
+    /* Highlighted Trust Link */
+    .nav-trust {
+        background: #fff8eb; color: #d97706; border: 1px solid #fde68a;
+    }
+    .nav-trust:hover { background: #fef3c7; color: #b45309; }
 
     /* ── CONTAINER ── */
     .container {
@@ -324,11 +352,15 @@
         background: white;
     }
 
-    /* ── STATUS BOARD ── */
+    /* ── STATUS BOARD & INSIGHTS ── */
     .status-board {
         padding: 20px;
         margin-bottom: 20px;
         background: linear-gradient(135deg, #fafbff, #f0f4ff);
+    }
+    .insights-board {
+        background: #fffbf0;
+        border-color: #fde68a;
     }
     .status-board-header {
         display: flex;
@@ -477,6 +509,28 @@
         color: #6b7280;
         border: 1px solid #e5e7eb;
     }
+
+    /* ── NEW: TRUST UI ACTIONS FOR FEED CARDS ── */
+    .freshness-badge {
+        font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+        display: inline-flex; align-items: center; gap: 4px; margin-left: 8px;
+    }
+    .fresh-hot { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+    .fresh-good { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .fresh-stale { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
+
+    .trust-actions {
+        display: flex; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-hard);
+    }
+    .btn-vote {
+        display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px;
+        font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid var(--border-hard);
+        background: var(--surface2); transition: all 0.15s ease; font-family: inherit; color: var(--text-muted);
+    }
+    .btn-vote:hover { background: #e5e7eb; }
+    .btn-vote.vote-up:hover { background: #dcfce7; color: #16a34a; border-color: #86efac; }
+    .btn-vote.vote-down:hover { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+
     .card-footer {
         display: flex;
         align-items: center;
@@ -485,6 +539,7 @@
         color: var(--text-light);
         padding-top: 8px;
         border-top: 1px solid #f3f4f6;
+        margin-top: 10px;
     }
     .human-dot {
         width: 6px; height: 6px;
@@ -513,6 +568,21 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── MODAL ── */
+    .modal-overlay {
+        position: fixed; inset: 0; background: rgba(15, 26, 62, 0.6); backdrop-filter: blur(4px);
+        z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal {
+        background: white; border-radius: var(--radius); padding: 30px; max-width: 500px; width: 100%;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative;
+    }
+    .modal-close { position: absolute; top: 20px; right: 20px; cursor: pointer; font-size: 20px; color: var(--text-muted); }
+    .modal h2 { font-size: 24px; color: var(--navy); margin-bottom: 12px; }
+    .modal p { color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; font-size: 15px; }
+    .modal ul { margin-left: 20px; color: var(--text-muted); margin-bottom: 20px; }
+    .modal li { margin-bottom: 8px; font-size: 14px; }
+
     /* ── LOAD MORE ── */
     #loadMoreBtn {
         width: 100%;
@@ -536,6 +606,16 @@
 </head>
 <body>
 
+<!-- LIVE TICKER -->
+<div class="live-ticker-wrap">
+    <div class="live-ticker">
+        <span><span class="ticker-fire">🔥</span> US Embassy - London: F1 Slot reported 2 mins ago</span>
+        <span><span class="ticker-fire">🔥</span> US Embassy - Accra: B1/B2 Slot reported 8 mins ago</span>
+        <span>⚡ Canada Embassy - Delhi: Student Slot reported 15 mins ago</span>
+        <span><span class="ticker-fire">🔥</span> US Embassy - London: F1 Slot reported 2 mins ago</span>
+    </div>
+</div>
+
 <!-- NAVBAR -->
 <header class="navbar">
     <div class="nav-container">
@@ -549,6 +629,7 @@
             <div class="nav-item active" onclick="window.location.href='/'">Live Feed</div>
             <div class="nav-item" onclick="window.location.href='/timelines'">Timelines</div>
             <div class="nav-item" onclick="window.location.href='/admin'">Admin</div>
+            <div class="nav-item nav-trust" onclick="document.getElementById('trustModal').style.display='flex'">🛡️ Why Trust Us?</div>
         </nav>
     </div>
 </header>
@@ -635,6 +716,18 @@
             </div>
         </div>
     </section>
+    
+    <!-- NEW: INSIGHTS BOARD -->
+    <section class="status-board insights-board card">
+        <div class="status-board-header">
+            <h3>💡 Platform Insights</h3>
+        </div>
+        <div class="status-list">
+            <div class="status-row"><span>📈 Peak Drops:</span> <span>Tuesdays 2am GMT</span></div>
+            <div class="status-row"><span>🏆 Top Helper:</span> <span>User_882 (12 reports)</span></div>
+            <div class="status-row"><span>⚡ Fastest booking:</span> <span>London (4 mins)</span></div>
+        </div>
+    </section>
 
     <!-- LIVE FEED -->
     <section class="feed-section">
@@ -649,6 +742,21 @@
     </section>
 
 </main>
+
+<!-- NEW: TRUST MODAL -->
+<div class="modal-overlay" id="trustModal">
+    <div class="modal">
+        <div class="modal-close" onclick="document.getElementById('trustModal').style.display='none'">✕</div>
+        <h2>How VisaSlot Works 🛡️</h2>
+        <p>VisaSlot is a community-driven intelligence platform. We believe finding a visa appointment should be free and fair.</p>
+        <ul>
+            <li><strong>Crowd-Sourced:</strong> All slots are reported by real users checking the portals.</li>
+            <li><strong>Community Verified:</strong> Users vote on whether a slot is still available or gone.</li>
+            <li><strong>No Agents:</strong> We do not book slots for you, and we never charge for access.</li>
+        </ul>
+        <button class="btn btn-primary" style="width: 100%;" onclick="document.getElementById('trustModal').style.display='none'">I Understand</button>
+    </div>
+</div>
 
 <script src="js/supabase.js"></script>
 <script src="js/feed.js"></script>
