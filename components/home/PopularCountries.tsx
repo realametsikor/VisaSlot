@@ -1,15 +1,22 @@
 import Link from 'next/link';
 
+// Raw MapPin SVG
+const MapPin = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+  </svg>
+);
+
 export default function PopularCountries() {
   const countries = [
-    { name: 'Canada', flag: '🇨🇦', hook: 'High demand for skilled workers.' },
-    { name: 'United Kingdom', flag: '🇬🇧', hook: 'Top universities & healthcare visas.' },
-    { name: 'Germany', flag: '🇩🇪', hook: 'Opportunity card now available.' },
-    { name: 'Australia', flag: '🇦🇺', hook: 'Points-based PR system.' },
+    { name: 'Canada', hook: 'High demand for skilled workers.' },
+    { name: 'United Kingdom', hook: 'Top universities & healthcare visas.' },
+    { name: 'Germany', hook: 'Opportunity card now available.' },
+    { name: 'Australia', hook: 'Points-based PR system.' },
   ];
 
   return (
-    <section className="bg-white py-16 px-4 border-t border-slate-100">
+    <section className="bg-slate-50 py-16 px-4 border-t border-slate-100">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-end mb-8">
           <div>
@@ -21,10 +28,12 @@ export default function PopularCountries() {
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {countries.map((country) => (
-            <Link key={country.name} href={`/countries/${country.name.toLowerCase().replace(' ', '-')}`} className="group bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-blue-200 hover:shadow-md transition-all">
-              <div className="text-4xl mb-4">{country.flag}</div>
+            <Link key={country.name} href={`/countries/${country.name.toLowerCase().replace(' ', '-')}`} className="group bg-white p-6 rounded-2xl border border-slate-200 hover:border-blue-200 hover:shadow-md transition-all duration-300">
+              <div className="mb-4">
+                 <MapPin className="w-6 h-6 text-slate-400 group-hover:text-blue-600 transition-colors" />
+              </div>
               <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{country.name}</h3>
-              <p className="text-sm text-slate-500 mt-1">{country.hook}</p>
+              <p className="text-sm text-slate-500 mt-2">{country.hook}</p>
             </Link>
           ))}
         </div>
