@@ -4,7 +4,6 @@ import PopularCountries from '../components/PopularCountries';
 import FeaturedGuides from '../components/FeaturedGuides';
 import RealStories from '../components/RealStories';
 import ToolsSection from '../components/ToolsSection';
-import Footer from '../components/Footer';
 
 export default function Home() {
   return (
