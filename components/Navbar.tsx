@@ -30,6 +30,7 @@ export default function Navbar() {
     { name: 'Study', href: '/study-abroad' },
     { name: 'Work', href: '/work-abroad' },
     { name: 'Tools', href: '/resources/tools' },
+    { name: 'Blog', href: '/blog' }, // Added Blog Link
   ];
 
   return (
