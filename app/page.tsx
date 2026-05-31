@@ -1,9 +1,9 @@
-import HeroSection from '../components/HeroSection';
+import HeroSection from '../components/home/HeroSection';
 import PathSelector from '../components/PathSelector';
-import PopularCountries from '../components/PopularCountries';
-import FeaturedGuides from '../components/FeaturedGuides';
-import RealStories from '../components/RealStories';
-import ToolsSection from '../components/ToolsSection';
+import PopularCountries from '../components/home/PopularCountries';
+import FeaturedGuides from '../components/home/FeaturedGuides';
+import RealStories from '../components/home/RealStories';
+import ToolsSection from '../components/home/ToolsSection';
 
 export default function Home() {
   return (
@@ -14,7 +14,6 @@ export default function Home() {
       <FeaturedGuides />
       <RealStories />
       <ToolsSection />
-      <Footer />
     </main>
   );
 }
