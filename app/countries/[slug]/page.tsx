@@ -49,10 +49,10 @@ export default function CountryPage({ params }: { params: { slug: string } }) {
       {/* Breadcrumb Navigation */}
       <div className="bg-white border-b border-slate-200 py-4 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex items-center text-sm text-slate-500">
-          <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-          <ChevronRight className="w-4 h-4 mx-2" />
-          <Link href="/countries" className="hover:text-blue-600 transition-colors">Destinations</Link>
-          <ChevronRight className="w-4 h-4 mx-2" />
+          <Link className="hover:text-blue-600 transition-colors" href="/">Home</Link>
+          <ChevronRight className="w-4 h-4 mx-2"/>
+          <Link className="hover:text-blue-600 transition-colors" href="/countries">Destinations</Link>
+          <ChevronRight className="w-4 h-4 mx-2"/>
           <span className="text-slate-900 font-medium">{formattedName}</span>
         </div>
       </div>
@@ -83,7 +83,7 @@ export default function CountryPage({ params }: { params: { slug: string } }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
           <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center gap-4">
             <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
-              <Clock className="w-6 h-6" />
+              <Clock className="w-6 h-6"/>
             </div>
             <div>
               <p className="text-sm text-slate-500 font-medium">Processing Time</p>
@@ -92,7 +92,7 @@ export default function CountryPage({ params }: { params: { slug: string } }) {
           </div>
           <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center gap-4">
             <div className="p-3 bg-emerald-50 rounded-lg text-emerald-600">
-              <Wallet className="w-6 h-6" />
+              <Wallet className="w-6 h-6"/>
             </div>
             <div>
               <p className="text-sm text-slate-500 font-medium">Proof of Funds</p>
@@ -101,7 +101,7 @@ export default function CountryPage({ params }: { params: { slug: string } }) {
           </div>
           <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center gap-4">
             <div className="p-3 bg-purple-50 rounded-lg text-purple-600">
-              <Briefcase className="w-6 h-6" />
+              <Briefcase className="w-6 h-6"/>
             </div>
             <div>
               <p className="text-sm text-slate-500 font-medium">Work Rights</p>
@@ -110,7 +110,7 @@ export default function CountryPage({ params }: { params: { slug: string } }) {
           </div>
           <div className="bg-white p-5 rounded-2xl border border-slate-200 flex items-center gap-4">
             <div className="p-3 bg-amber-50 rounded-lg text-amber-600">
-              <GraduationCap className="w-6 h-6" />
+              <GraduationCap className="w-6 h-6"/>
             </div>
             <div>
               <p className="text-sm text-slate-500 font-medium">Language Test</p>
@@ -126,44 +126,51 @@ export default function CountryPage({ params }: { params: { slug: string } }) {
           {/* Study Pathway */}
           <div className="bg-white p-8 rounded-3xl border border-slate-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 flex flex-col h-full group">
             <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-blue-600 mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-              <GraduationCap className="w-7 h-7" />
+              <GraduationCap className="w-7 h-7"/>
             </div>
             <h3 className="text-2xl font-bold text-slate-900 mb-3">Study in {formattedName}</h3>
             <p className="text-slate-500 mb-6 flex-grow">
               Information on student visas, university applications, tuition fees, and post-graduation work permits.
             </p>
-            <Link href={`/countries/${params.slug}/study`} className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all">
-              View Study Guide <ChevronRight className="w-4 h-4" />
+            <Link className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all" href="{`/countries/${params.slug}/study`}">
+              View Study Guide <ChevronRight className="w-4 h-4"/>
             </Link>
           </div>
 
           {/* Work Pathway */}
           <div className="bg-white p-8 rounded-3xl border border-slate-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 flex flex-col h-full group">
             <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-blue-600 mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-              <Briefcase className="w-7 h-7" />
+              <Briefcase className="w-7 h-7"/>
             </div>
             <h3 className="text-2xl font-bold text-slate-900 mb-3">Work in {formattedName}</h3>
             <p className="text-slate-500 mb-6 flex-grow">
               Explore sponsored jobs, skilled worker visas, employer requirements, and high-demand occupations.
             </p>
-            <Link href={`/countries/${params.slug}/work`} className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all">
-              View Work Guide <ChevronRight className="w-4 h-4" />
+            <Link className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all" href="{`/countries/${params.slug}/work`}">
+              View Work Guide <ChevronRight className="w-4 h-4"/>
             </Link>
           </div>
 
           {/* Relocate Pathway */}
           <div className="bg-white p-8 rounded-3xl border border-slate-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300 flex flex-col h-full group">
             <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-blue-600 mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-              <Plane className="w-7 h-7" />
+              <Plane className="w-7 h-7"/>
             </div>
             <h3 className="text-2xl font-bold text-slate-900 mb-3">Permanent Residency</h3>
             <p className="text-slate-500 mb-6 flex-grow">
               Step-by-step guidance on points-based systems, family sponsorship, and permanent relocation.
             </p>
-            <Link href={`/countries/${params.slug}/relocate`} className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all">
-              View PR Guide <ChevronRight className="w-4 h-4" />
+            <Link className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all" href="{`/countries/${params.slug}/relocate`}">
+              View PR Guide <ChevronRight className="w-4 h-4"/>
             </Link>
           </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // This tells Next.js to pre-build these specific country pages
 export async function generateStaticParams() {
   return [
@@ -174,9 +181,4 @@ export async function generateStaticParams() {
     { slug: 'united-states' },
     { slug: 'new-zealand' },
   ];
-}
-        </div>
-      </div>
-    </div>
-  );
 }
