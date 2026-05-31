@@ -164,7 +164,17 @@ export default function CountryPage({ params }: { params: { slug: string } }) {
               View PR Guide <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
-
+// This tells Next.js to pre-build these specific country pages
+export async function generateStaticParams() {
+  return [
+    { slug: 'canada' },
+    { slug: 'united-kingdom' },
+    { slug: 'germany' },
+    { slug: 'australia' },
+    { slug: 'united-states' },
+    { slug: 'new-zealand' },
+  ];
+}
         </div>
       </div>
     </div>
