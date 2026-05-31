@@ -37,9 +37,13 @@ const ChevronRight = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export default function CountryPage({ params }: { params: { slug: string } }) {
-  // Format the slug into a readable name (e.g., "united-kingdom" -> "United Kingdom")
-  const formattedName = params.slug
+// Notice the addition of "async" and the Promise type here
+export default async function CountryPage({ params }: { params: Promise<{ slug: string }> }) {
+  // We await the params before trying to read the slug
+  const { slug } = await params;
+
+  // Now we can safely split the slug
+  const formattedName = slug
     .split('-')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
@@ -132,7 +136,7 @@ export default function CountryPage({ params }: { params: { slug: string } }) {
             <p className="text-slate-500 mb-6 flex-grow">
               Information on student visas, university applications, tuition fees, and post-graduation work permits.
             </p>
-            <Link className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all" href="{`/countries/${params.slug}/study`}">
+            <Link className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all" href={`/countries/${slug}/study`}>
               View Study Guide <ChevronRight className="w-4 h-4"/>
             </Link>
           </div>
@@ -146,7 +150,7 @@ export default function CountryPage({ params }: { params: { slug: string } }) {
             <p className="text-slate-500 mb-6 flex-grow">
               Explore sponsored jobs, skilled worker visas, employer requirements, and high-demand occupations.
             </p>
-            <Link className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all" href="{`/countries/${params.slug}/work`}">
+            <Link className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all" href={`/countries/${slug}/work`}>
               View Work Guide <ChevronRight className="w-4 h-4"/>
             </Link>
           </div>
@@ -160,7 +164,7 @@ export default function CountryPage({ params }: { params: { slug: string } }) {
             <p className="text-slate-500 mb-6 flex-grow">
               Step-by-step guidance on points-based systems, family sponsorship, and permanent relocation.
             </p>
-            <Link className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all" href="{`/countries/${params.slug}/relocate`}">
+            <Link className="text-blue-600 font-medium flex items-center gap-1 hover:gap-2 transition-all" href={`/countries/${slug}/relocate`}>
               View PR Guide <ChevronRight className="w-4 h-4"/>
             </Link>
           </div>
