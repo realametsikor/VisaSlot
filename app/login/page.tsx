@@ -89,9 +89,10 @@ export default function LoginPage() {
               </div>
 
               <div className="text-sm leading-6">
-                <a href="#" className="font-semibold text-blue-600 hover:text-blue-500">
+                {/* CHANGED FROM <a> TO <Link> */}
+                <Link href="/forgot-password" className="font-semibold text-blue-600 hover:text-blue-500">
                   Forgot password?
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -117,6 +118,7 @@ export default function LoginPage() {
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-4">
+              {/* Form buttons keep the <button> tag so they can fire onClick events later */}
               <button className="flex w-full items-center justify-center gap-3 rounded-xl bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus-visible:ring-transparent transition-colors">
                 <GoogleIcon className="h-5 w-5" />
                 <span className="text-sm font-semibold leading-6">Google</span>
