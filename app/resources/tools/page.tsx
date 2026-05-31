@@ -33,33 +33,39 @@ export default function ToolsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          {/* Cost Calculator Tool Card */}
           <div className="bg-white rounded-3xl border border-slate-200 p-8 hover:shadow-lg transition-all duration-300 flex flex-col h-full group">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors"><Calculator className="w-7 h-7" /></div>
+              <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <Calculator className="w-7 h-7" />
+              </div>
               <h2 className="text-2xl font-bold text-slate-900">Cost Calculator</h2>
             </div>
             <p className="text-slate-500 mb-8 flex-grow">
               Input your destination country, family size, and visa type to generate a comprehensive estimate of your total relocation expenses, including proof of funds, flight averages, and government fees.
             </p>
-            {/* CHANGED TO LINK */}
-            <Link href="/login" className="w-full py-4 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 transition-colors shadow-sm flex justify-center items-center gap-2">
+            <Link href="/resources/tools/cost-calculator" className="w-full py-4 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 transition-colors shadow-sm flex justify-center items-center gap-2">
               Launch Calculator <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
 
+          {/* Timeline Tracker Tool Card */}
           <div className="bg-white rounded-3xl border border-slate-200 p-8 hover:shadow-lg transition-all duration-300 flex flex-col h-full group">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors"><CalendarClock className="w-7 h-7" /></div>
+              <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <CalendarClock className="w-7 h-7" />
+              </div>
               <h2 className="text-2xl font-bold text-slate-900">Timeline Tracker</h2>
             </div>
             <p className="text-slate-500 mb-8 flex-grow">
               Build a personalized roadmap. Select your target move date and visa pathway, and we will automatically map out when you need to take language tests, submit applications, and book flights.
             </p>
-            {/* CHANGED TO LINK */}
-            <Link href="/login" className="w-full py-4 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 transition-colors shadow-sm flex justify-center items-center gap-2">
+            <Link href="/resources/tools/timeline-tracker" className="w-full py-4 bg-slate-900 text-white font-medium rounded-xl hover:bg-slate-800 transition-colors shadow-sm flex justify-center items-center gap-2">
               Create My Timeline <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
+
         </div>
       </div>
 
@@ -76,7 +82,6 @@ export default function ToolsPage() {
                 <div className="p-3 bg-slate-50 rounded-lg text-slate-600 group-hover:text-blue-600 transition-colors">
                   <ClipboardCheck className="w-6 h-6" />
                 </div>
-                {/* CHANGED TO LINK */}
                 <Link href="/start-here" className="text-slate-400 hover:text-blue-600 transition-colors" aria-label="Download PDF">
                   <Download className="w-5 h-5" />
                 </Link>
