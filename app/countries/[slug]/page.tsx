@@ -20,9 +20,9 @@ const ChevronRight = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"/></svg>
 );
 
-export default function CountryPage({ params }: { params: { slug?: string } }) {
-  // Safe fallback to prevent Vercel build crashes
-  const safeSlug = params?.slug || 'canada';
+export default async function CountryPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const safeSlug = slug || 'canada';
 
   const formattedName = safeSlug
     .split('-')
@@ -52,12 +52,13 @@ export default function CountryPage({ params }: { params: { slug?: string } }) {
             </p>
           </div>
           <div className="flex-shrink-0 w-full md:w-auto flex flex-col gap-3">
-             <button className="w-full md:w-auto px-8 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-sm text-center">
+             {/* CHANGED FROM BUTTONS TO LINKS */}
+             <Link href="/resources/tools" className="w-full md:w-auto px-8 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors shadow-sm text-center block">
               Check Eligibility
-            </button>
-             <button className="w-full md:w-auto px-8 py-3 bg-slate-50 text-slate-700 font-medium rounded-xl border border-slate-200 hover:bg-slate-100 hover:text-slate-900 transition-colors shadow-sm text-center">
+            </Link>
+             <Link href="/start-here" className="w-full md:w-auto px-8 py-3 bg-slate-50 text-slate-700 font-medium rounded-xl border border-slate-200 hover:bg-slate-100 hover:text-slate-900 transition-colors shadow-sm text-center block">
               Download Guide (PDF)
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -109,11 +110,6 @@ export default function CountryPage({ params }: { params: { slug?: string } }) {
 
 export async function generateStaticParams() {
   return [
-    { slug: 'canada' },
-    { slug: 'united-kingdom' },
-    { slug: 'germany' },
-    { slug: 'australia' },
-    { slug: 'united-states' },
-    { slug: 'new-zealand' },
+    { slug: 'canada' }, { slug: 'united-kingdom' }, { slug: 'germany' }, { slug: 'australia' }, { slug: 'united-states' }, { slug: 'new-zealand' }
   ];
 }
